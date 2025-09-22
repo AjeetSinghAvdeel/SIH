@@ -1,0 +1,305 @@
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Shield, Play, Pause, Square, AlertTriangle, CheckCircle, Download } from 'lucide-react';
+
+interface WipeProgress {
+  stage: string;
+  progress: number;
+  speed: string;
+  timeRemaining: string;
+  isComplete: boolean;
+}
+
+const SecureWipe = () => {
+  const [wipeMethod, setWipeMethod] = useState<'quick' | '3pass' | 'full'>('quick');
+  const [isWiping, setIsWiping] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [wipeProgress, setWipeProgress] = useState<WipeProgress>({
+    stage: 'Initializing...',
+    progress: 0,
+    speed: '0 MB/s',
+    timeRemaining: '--:--',
+    isComplete: false
+  });
+
+  const wipeOptions = [
+    {
+      id: 'quick' as const,
+      name: 'Quick Wipe',
+      description: 'Single zero-fill pass',
+      time: '~15 min',
+      security: 'Basic',
+      icon: '⚡'
+    },
+    {
+      id: '3pass' as const,
+      name: '3-Pass Secure Wipe',
+      description: 'Zero, Random, Zero pattern',
+      time: '~45 min',
+      security: 'High',
+      icon: '🛡️'
+    },
+    {
+      id: 'full' as const,
+      name: 'Full Secure Wipe',
+      description: 'NIST SP 800-88 compliant (7-pass)',
+      time: '~2 hours',
+      security: 'Maximum',
+      icon: '🔒'
+    }
+  ];
+
+  const startWipe = async () => {
+    setIsWiping(true);
+    setIsPaused(false);
+    
+    const stages = [
+      'Initializing secure wipe...',
+      'Pass 1: Zero-fill...',
+      'Pass 2: Random data...',
+      'Pass 3: Verification...',
+      'Generating certificate...',
+      'Complete'
+    ];
+
+    for (let i = 0; i < stages.length; i++) {
+      if (wipeMethod === 'quick' && i > 2) break;
+      if (wipeMethod === '3pass' && i > 3) break;
+      
+      setWipeProgress({
+        stage: stages[i],
+        progress: ((i + 1) / stages.length) * 100,
+        speed: `${Math.floor(Math.random() * 50 + 10)} MB/s`,
+        timeRemaining: `${Math.floor(Math.random() * 60 + 5)}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
+        isComplete: i === stages.length - 1
+      });
+
+      // Simulate progress within each stage
+      for (let progress = 0; progress <= 100; progress += 20) {
+        if (!isPaused) {
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+      }
+    }
+
+    setWipeProgress(prev => ({ ...prev, isComplete: true }));
+    setIsWiping(false);
+  };
+
+  const pauseWipe = () => {
+    setIsPaused(!isPaused);
+  };
+
+  const stopWipe = () => {
+    setIsWiping(false);
+    setIsPaused(false);
+    setWipeProgress({
+      stage: 'Stopped',
+      progress: 0,
+      speed: '0 MB/s',
+      timeRemaining: '--:--',
+      isComplete: false
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Wipe Method Selection */}
+      <div className="glass-card p-6">
+        <h2 className="text-2xl font-cyber font-bold mb-6 text-neon">
+          Secure Wipe Configuration
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {wipeOptions.map((option) => (
+            <Card
+              key={option.id}
+              className={`glass-card p-4 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                wipeMethod === option.id ? 'ring-2 ring-primary glow-primary' : ''
+              }`}
+              onClick={() => !isWiping && setWipeMethod(option.id)}
+            >
+              <div className="text-center space-y-3">
+                <div className="text-3xl">{option.icon}</div>
+                <h3 className="font-cyber font-bold text-lg">{option.name}</h3>
+                <p className="text-sm text-muted-foreground">{option.description}</p>
+                <div className="space-y-1">
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Time: </span>
+                    <span className="text-warning">{option.time}</span>
+                  </div>
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Security: </span>
+                    <span className={
+                      option.security === 'Maximum' ? 'text-success' :
+                      option.security === 'High' ? 'text-warning' : 'text-accent'
+                    }>{option.security}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Control Buttons */}
+        <div className="flex justify-center gap-4">
+          {!isWiping ? (
+            <Button
+              onClick={startWipe}
+              className="btn-danger px-8 py-4 text-lg"
+            >
+              <Shield className="w-5 h-5 mr-2" />
+              START SECURE WIPE
+            </Button>
+          ) : (
+            <div className="flex gap-3">
+              <Button
+                onClick={pauseWipe}
+                className="btn-cyber px-6 py-3"
+              >
+                {isPaused ? <Play className="w-4 h-4 mr-2" /> : <Pause className="w-4 h-4 mr-2" />}
+                {isPaused ? 'Resume' : 'Pause'}
+              </Button>
+              <Button
+                onClick={stopWipe}
+                className="btn-danger px-6 py-3"
+              >
+                <Square className="w-4 h-4 mr-2" />
+                Stop
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Wipe Progress */}
+      {(isWiping || wipeProgress.isComplete) && (
+        <div className="glass-card p-8">
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-cyber font-bold mb-2">
+                {wipeProgress.isComplete ? (
+                  <span className="text-success">Wipe Complete ✓</span>
+                ) : (
+                  <span className="text-primary">Secure Wipe in Progress</span>
+                )}
+              </h3>
+              <p className="text-lg font-mono text-muted-foreground">
+                {wipeProgress.stage}
+              </p>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm font-mono">
+                <span>Progress</span>
+                <span>{Math.round(wipeProgress.progress)}%</span>
+              </div>
+              <div className="relative w-full h-4 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary via-accent to-secondary transition-all duration-500 rounded-full"
+                  style={{ width: `${wipeProgress.progress}%` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                </div>
+              </div>
+            </div>
+
+            {/* Statistics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="glass-card p-3 text-center">
+                <div className="text-sm text-muted-foreground">Speed</div>
+                <div className="text-lg font-cyber font-bold text-accent">
+                  {wipeProgress.speed}
+                </div>
+              </div>
+              <div className="glass-card p-3 text-center">
+                <div className="text-sm text-muted-foreground">Remaining</div>
+                <div className="text-lg font-cyber font-bold text-warning">
+                  {wipeProgress.timeRemaining}
+                </div>
+              </div>
+              <div className="glass-card p-3 text-center">
+                <div className="text-sm text-muted-foreground">Method</div>
+                <div className="text-lg font-cyber font-bold text-primary">
+                  {wipeOptions.find(o => o.id === wipeMethod)?.name.split(' ')[0]}
+                </div>
+              </div>
+              <div className="glass-card p-3 text-center">
+                <div className="text-sm text-muted-foreground">Status</div>
+                <div className="text-lg font-cyber font-bold text-success">
+                  {isPaused ? 'PAUSED' : isWiping ? 'ACTIVE' : 'READY'}
+                </div>
+              </div>
+            </div>
+
+            {/* Terminal Log */}
+            <div className="terminal max-h-40 overflow-y-auto">
+              <div className="space-y-1 text-xs">
+                <div className="text-success">[INFO] SecureWipeAI v2.0 initialized</div>
+                <div className="text-primary">[SCAN] Device: Samsung SSD 970 EVO (500GB)</div>
+                <div className="text-warning">[PREP] Unmounting file systems...</div>
+                <div className="text-accent">[EXEC] Starting {wipeOptions.find(o => o.id === wipeMethod)?.name}</div>
+                {isWiping && (
+                  <>
+                    <div className="text-primary animate-data-stream">[WIPE] {wipeProgress.stage}</div>
+                    <div className="text-muted-foreground">[PROG] {Math.round(wipeProgress.progress)}% complete</div>
+                  </>
+                )}
+                {wipeProgress.isComplete && (
+                  <>
+                    <div className="text-success">[DONE] Wipe operation completed successfully</div>
+                    <div className="text-success">[CERT] Generating tamper-proof certificate...</div>
+                    <div className="text-success">[SAVE] Certificate saved with digital signature</div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Certificate Generation */}
+            {wipeProgress.isComplete && (
+              <div className="border-t border-border pt-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-6 h-6 text-success" />
+                    <div>
+                      <h4 className="font-cyber font-bold text-success">
+                        Wipe Certificate Generated
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Tamper-proof certificate with digital signature
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="btn-success">
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Certificate
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Warning Notice */}
+      <div className="glass-card p-4 border border-destructive/50">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-destructive mt-0.5" />
+          <div className="space-y-1">
+            <h4 className="font-cyber font-bold text-destructive">
+              WARNING: Data Destruction
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              This operation will permanently destroy all data on the selected device. 
+              Ensure you have backed up any important files before proceeding.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SecureWipe;

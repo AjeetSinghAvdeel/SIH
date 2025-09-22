@@ -1,0 +1,37 @@
+[
+  {
+    "id": "c711391f",
+    "device": "/Volumes/NO NAME",
+    "method": "Secure Wipe (1-pass overwrite)",
+    "date": "2025-09-19 16:35:45",
+    "status": "VALID"
+  },
+  {
+    "id": "9ce29d4d",
+    "device": "/Volumes/NO NAME",
+    "method": "Secure Wipe (3-pass overwrite)",
+    "date": "2025-09-19 21:31:35",
+    "status": "VALID"
+  },
+  {
+    "id": "764a9665",
+    "device": "/Volumes/NO NAME",
+    "method": "Secure Wipe (3-pass overwrite)",
+    "date": "2025-09-19 21:47:06",
+    "status": "VALID"
+  },
+  {
+    "id": "fd95ddcf",
+    "device": "/Volumes/NO NAME",
+    "method": "Secure Wipe (3-pass overwrite)",
+    "date": "2025-09-20 11:48:07",
+    "status": "VALID"
+  },
+  {
+    "id": "becab9cd",
+    "device": "/Volumes/NO NAME",
+    "method": "Secure Wipe (1-pass overwrite)",
+    "date": "2025-09-20 11:59:45",
+    "status": "VALID"
+  }
+]
