@@ -28,7 +28,7 @@ const Header = () => {
     };
 
     fetchStatus();
-    const interval = setInterval(fetchStatus, 5000); // refresh every 5s
+    const interval = setInterval(fetchStatus, 5000); 
     return () => clearInterval(interval);
   }, []);
 

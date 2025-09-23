@@ -425,8 +425,8 @@ def system_status():
         return {
             "cpu": cpu,
             "memory": memory,
-            "ai_models": True,   # later you can link this with your AI service
-            "connected": True    # could be a real connectivity check
+            "ai_models": True,   
+            "connected": True   
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

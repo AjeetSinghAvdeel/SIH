@@ -22,7 +22,7 @@ const Dashboard = () => {
     try {
       await addDoc(collection(db, "users", user.uid, "wipes"), {
         createdAt: new Date(),
-        date: new Date().toISOString().replace("T", " ").substring(0, 19), // "2025-09-20 23:18:14"
+        date: new Date().toISOString().replace("T", " ").substring(0, 19), 
         device: certificate.device,
         method: certificate.method,
         passes: certificate.passes,
@@ -46,7 +46,7 @@ const Dashboard = () => {
       case "compliance":
         return <ComplianceDashboard />;
       case "settings":
-        return <SettingsTab />; // ✅ Uses our SettingsTab component
+        return <SettingsTab />; 
       default:
         return <DeviceScanner />;
     }
