@@ -39,15 +39,23 @@ SIH/
 │   ├── src/
 │   │   ├── App.tsx / index.tsx        # App entry
 │   │   ├── components/                # UI Components
+│   │   │   ├── certificates/CertificateManager.tsx                  
+│   │   │   ├── charts/RiskGauge.tsx
+│   │   │   ├── compliance/ComplianceDashboard.tsx
+│   │   │   ├── scanning/DeviceScanner.tsx 
+│   │   │   ├── settings/SettingsTab.tsx
 │   │   │   ├── ui/                    # shadcn/ui components
-│   │   │   ├── scanning/DeviceScanner.tsx
+│   │   │   ├── verification/TamperDetection.tsx
 │   │   │   ├── wiping/SecureWipe.tsx
-│   │   │   ├── certificates/CertificateManager.tsx
-│   │   │   └── tamper/TamperDetection.tsx
+│   │   │   ├── settings/SettingsTab.tsx
+│   │   │   ├── CertificatesList.jsx
+│   │   │   └── ProtectedRoute.tsx
 │   │   ├── pages/                     # Routes
 │   │   │   ├── Dashboard.tsx
-│   │   │   ├── SettingsTab.tsx
-│   │   │   └── Reports.tsx
+│   │   │   ├── Landing.tsx
+│   │   │   ├── Login.tsx
+│   │   │   ├── Notfound.tsx
+│   │   │   └── Register.tsx
 │   │   ├── styles/                    # Tailwind / custom styles
 │   │   └── firebaseConfig.ts          # Firebase integration
 │
